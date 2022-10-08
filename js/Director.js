@@ -27,28 +27,33 @@ export class Director{
     }
 
     run(){
-        this.dataStore.get('background').draw();
-        const pencils = this.dataStore.get('pencils');
-        if(pencils[0].x+pencils[0].width<=0&&
-        pencils.length===4){
-            pencils.shift();
-            pencils.shift();
+        if(!this.isGameOver){
+            this.dataStore.get('background').draw();
+            const pencils = this.dataStore.get('pencils');
+            if(pencils[0].x+pencils[0].width<=0&&
+                pencils.length===4){
+                pencils.shift();
+                pencils.shift();
+            }
+
+            if(pencils[0].x <= (window.innerWidth = pencils[0].width /2) &&
+                pencils.length ===2){
+                this.createPencil();
+            }
+
+
+            this.dataStore.get('pencils').forEach(function (value){
+                value.draw();
+            });
+            this.dataStore.get('land').draw();
+
+
+            let timer = requestAnimationFrame(() => this.run());
+            this.dataStore.put('timer',timer);
         }
-
-        if(pencils[0].x <= (window.innerWidth = pencils[0].width /2) &&
-        pencils.length ===2){
-            this.createPencil();
+        else{
+            cancelAnimationFrame(this.dataStore.get('timer'));
+            this.dataStore.destory();
         }
-
-
-        this.dataStore.get('pencils').forEach(function (value){
-            value.draw();
-        });
-        this.dataStore.get('land').draw();
-
-
-        let timer = requestAnimationFrame(() => this.run());
-         this.dataStore.put('timer',timer);
-        //cancelAnimationFrame(this.dataStore.get('timer'));
     }
 }
